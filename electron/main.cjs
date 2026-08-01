@@ -13,6 +13,10 @@ let isQuitting = false;
 // ============================================
 const isWindows = os.platform() === 'win32';
 
+// Anti-Black Screen & GPU Crash Stability Switches
+app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1100,
@@ -23,6 +27,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
       contextIsolation: true,
+      webgl: true,
+      backgroundThrottling: false,
     },
     frame: false,
     titleBarStyle: 'hidden',
@@ -32,6 +38,29 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+  });
+
+  // Fallback safety timer: guarantees window shows even if ready-to-show is delayed
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isVisible()) {
+      mainWindow.show();
+    }
+  }, 1200);
+
+  // Auto-recovery if rendering fails
+  mainWindow.webContents.on('did-fail-load', () => {
+    if (!app.isPackaged) {
+      setTimeout(() => mainWindow.loadURL('http://localhost:5173'), 1000);
+    } else {
+      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    }
+  });
+
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error('Renderer process gone:', details);
+    if (details.reason !== 'clean-exit') {
+      mainWindow.reload();
+    }
   });
 
   mainWindow.on('close', (event) => {
