@@ -32,14 +32,14 @@ export default function Services({ addToast }) {
             blame: 'Dernier démarrage :\n4.2s SysMain\n1.8s WSearch\n 923ms DiagTrack\n 612ms Spooler\n 445ms XboxGipSvc'
           })
         }
-      } catch (e) {
-        addToast('error', 'Erreur', 'Impossible de charger les services')
+      } catch {
+        addToast?.('error', 'Erreur', 'Impossible de charger les services')
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [])
+  }, [addToast])
 
   const handleToggleService = async (service, enable) => {
     setActionLoading(prev => ({ ...prev, [service]: true }))

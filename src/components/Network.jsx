@@ -16,7 +16,7 @@ export default function Network({ addToast, refreshHistory }) {
           throw new Error(res.message)
         }
       }
-    } catch (e) {
+    } catch {
       addToast('error', 'Ping', 'Impossible de joindre le serveur.')
       setPingResult('Err')
     } finally {

@@ -314,7 +314,9 @@ export default function Tweaks({ addToast }) {
         }
         setActiveTweaks(prev => ({ ...prev, [tweak.id]: true }))
         appliedCount++
-      } catch (e) {}
+      } catch {
+        // Continue applying remaining tweaks
+      }
     }
 
     setGodModeLoading(false)

@@ -34,6 +34,13 @@ function createWindow() {
     mainWindow.show();
   });
 
+  mainWindow.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
     mainWindow.loadURL('http://localhost:5173');
   } else {
@@ -123,7 +130,7 @@ function readHistory() {
   try {
     const data = fs.readFileSync(historyPath, 'utf-8');
     return JSON.parse(data);
-  } catch (e) {
+  } catch {
     return {
       totalCleanups: 0,
       totalGamingMode: 0,
@@ -138,7 +145,7 @@ function writeHistory(history) {
   try {
     fs.writeFileSync(historyPath, JSON.stringify(history, null, 2), 'utf-8');
     return { success: true, message: 'Historique sauvegardé' };
-  } catch (e) {
+  } catch {
     return { success: false, message: 'Erreur lors de la sauvegarde de l\'historique' };
   }
 }

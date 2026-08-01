@@ -6,7 +6,7 @@ export default function Processes({ addToast }) {
   const [sortBy, setSortBy] = useState('mem')
   const [refreshing, setRefreshing] = useState(false)
 
-  const fetchProcesses = async () => {
+  const fetchProcesses = useCallback(async () => {
     setRefreshing(true)
     try {
       if (window.electronAPI) {
@@ -25,18 +25,18 @@ export default function Processes({ addToast }) {
           { pid: '4321', name: 'Code.exe', cpu: 4.1, mem: 9.8 },
         ])
       }
-    } catch (e) {
-      addToast('error', 'Erreur', 'Impossible de récupérer les processus')
+    } catch {
+      addToast?.('error', 'Erreur', 'Impossible de récupérer les processus')
     } finally {
       setRefreshing(false)
     }
-  }
+  }, [addToast])
 
   useEffect(() => {
     fetchProcesses()
     const interval = setInterval(fetchProcesses, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchProcesses])
 
   const killProcess = async (pid) => {
     try {
@@ -51,7 +51,7 @@ export default function Processes({ addToast }) {
         addToast('success', 'Processus', `Processus ${pid} terminé`)
       }
       fetchProcesses()
-    } catch (e) {
+    } catch {
       addToast('error', 'Erreur', `Impossible de terminer le processus ${pid}`)
     }
   }
