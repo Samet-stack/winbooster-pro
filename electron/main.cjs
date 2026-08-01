@@ -616,6 +616,42 @@ ipcMain.handle('disable-spectre', async () => {
   return runCmd(`powershell.exe -EncodedCommand ${psSpc}`);
 });
 
+ipcMain.handle('disable-vbs', async () => {
+  const vbs1 = 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 0 /f';
+  const vbs2 = 'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 0 /f';
+  const vbs3 = 'bcdedit /set hypervisorlaunchtype off';
+  return runCmd(`${vbs1} && ${vbs2} && ${vbs3}`);
+});
+
+ipcMain.handle('enable-fse', async () => {
+  const fse1 = 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_FSEBehaviorMode" /t REG_DWORD /d 2 /f';
+  const fse2 = 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_HonorUserFSEBehaviorMode" /t REG_DWORD /d 1 /f';
+  const fse3 = 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_FSEBehavior" /t REG_DWORD /d 2 /f';
+  const fse4 = 'reg add "HKCU\\System\\GameConfigStore" /v "GameDVR_DXGIHonorFSEWindowsCompatible" /t REG_DWORD /d 1 /f';
+  return runCmd(`${fse1} && ${fse2} && ${fse3} && ${fse4}`);
+});
+
+ipcMain.handle('enable-gpu-tdr', async () => {
+  const tdr1 = 'reg add "HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers" /v "TdrDelay" /t REG_DWORD /d 8 /f';
+  const tdr2 = 'reg add "HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers" /v "TdrLevel" /t REG_DWORD /d 3 /f';
+  const tdr3 = 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm" /v "OverlayTestMode" /t REG_DWORD /d 5 /f';
+  return runCmd(`${tdr1} && ${tdr2} && ${tdr3}`);
+});
+
+ipcMain.handle('enable-active-cooling', async () => {
+  const cool1 = 'powercfg -attributes 54533251-82be-4824-96c1-47b60b740d00 94d3a615-a899-4ac5-ae2b-e4d8f634367f -ATTRIB_HIDE';
+  const cool2 = 'powercfg -setacvalueindex SCHEME_CURRENT 54533251-82be-4824-96c1-47b60b740d00 94d3a615-a899-4ac5-ae2b-e4d8f634367f 1';
+  const cool3 = 'powercfg -setactive SCHEME_CURRENT';
+  return runCmd(`${cool1} && ${cool2} && ${cool3}`);
+});
+
+ipcMain.handle('disable-qos-p2p', async () => {
+  const qos1 = 'reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config" /v "DODownloadMode" /t REG_DWORD /d 0 /f';
+  const qos2 = 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization" /v "DODownloadMode" /t REG_DWORD /d 0 /f';
+  const qos3 = 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched" /v "NonBestEffortLimit" /t REG_DWORD /d 0 /f';
+  return runCmd(`${qos1} && ${qos2} && ${qos3}`);
+});
+
 // ============================================
 // IPC: SECURITY & RESTORE (Panic System)
 // ============================================

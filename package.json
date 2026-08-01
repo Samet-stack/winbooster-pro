@@ -2,6 +2,7 @@
   "name": "winbooster-pro",
   "version": "1.0.0",
   "description": "Ultra-low latency, eSport-focused Windows 10/11 Performance & Kernel Optimizer with a Next-Gen HUD UI",
+  "author": "WinBooster Open Source Project",
   "main": "electron/main.cjs",
   "license": "MIT",
   "type": "module",
@@ -39,8 +40,6 @@
   "build": {
     "appId": "com.winbooster.app",
     "productName": "WinBooster",
-    "description": "eSport Windows Optimizer HUD",
-    "author": "WinBooster Open Source Project",
     "directories": {
       "output": "dist-electron"
     },

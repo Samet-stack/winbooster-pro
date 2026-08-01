@@ -61,6 +61,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   enableTcpProfile: () => ipcRenderer.invoke('enable-tcp-profile'),
   enablePrioritySep: () => ipcRenderer.invoke('enable-priority-sep'),
   disableSpectre: () => ipcRenderer.invoke('disable-spectre'),
+  disableVbs: () => ipcRenderer.invoke('disable-vbs'),
+  enableFse: () => ipcRenderer.invoke('enable-fse'),
+  enableGpuTdr: () => ipcRenderer.invoke('enable-gpu-tdr'),
+  enableActiveCooling: () => ipcRenderer.invoke('enable-active-cooling'),
+  disableQosP2p: () => ipcRenderer.invoke('disable-qos-p2p'),
   
   createRestorePoint: () => ipcRenderer.invoke('create-restore-point'),
   factoryReset: () => ipcRenderer.invoke('factory-reset'),
